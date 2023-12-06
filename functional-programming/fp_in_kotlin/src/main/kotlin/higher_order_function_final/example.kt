@@ -23,29 +23,49 @@ val users: List<User> = listOf(
 
 fun <T> _filter(list: List<T>, predicate: Predicate<T>): List<T> {
     val filtered_list: MutableList<T> = ArrayList()
-    _each(list) { element -> { if (predicate.test(element)) filtered_list.add(element) } }
+    for (element in list) {
+        if (predicate.test(element)) {
+            filtered_list.add(element)
+        }
+    }
     return filtered_list
 }
 
 fun <T, R> _map(list: List<T>, func: (T) -> R): List<R> {
     val new_list: MutableList<R> = ArrayList()
-    _each(list) { element -> func(element) }
+    for (element in list) {
+        new_list.add(func(element))
+    }
     return new_list
 }
 
-fun <T, R> _each(list: List<T>, func: (T) -> R) {
-    for (element in list) {
-        func(element)
+fun <T, R> _curry(func: (T, T) -> R): (T) -> (T) -> R {
+    return fun(a: T): (T) -> R {
+        return fun(b: T): R {
+            return func(a, b)
+        }
+    }
+}
+
+fun <T, R> _curry_right(func: (T, T) -> R): (T) -> (T) -> R {
+    return fun(a: T): (T) -> R {
+        return fun(b: T): R {
+            return func(b, a)
+        }
     }
 }
 
 fun run_something_funny() {
-    val users_age_at_least_thirty = _filter(users) { user -> user.age >= 30 }
-    val names_of_users_age_at_least_thirty = _map(users_age_at_least_thirty) { user -> user.name }
-    println(names_of_users_age_at_least_thirty)
-    val users_age_less_than_thirty = _filter(users) { user -> user.age < 30 }
-    val ages_of_users_age_less_than_thirty = _map(users_age_less_than_thirty) { user -> user.age }
-    println(ages_of_users_age_less_than_thirty)
-    println(_filter(listOf(1, 2, 3, 4)) { num -> num % 2 == 0 })
-    println(_filter(listOf(1, 2, 3, 4)) { num -> num % 2 != 0 })
+    val add = _curry { a: Int, b -> a + b }
+    val mul = _curry { a: Int, b -> a * b }
+    val add5 = add(5)
+    val mul7 = mul(7)
+    println(add(5)(-2) == add5(-2))
+    println(mul(7)(3) == mul7(3))
+    val sub = _curry_right { a: Int, b -> a - b }
+    val div = _curry_right { a: Int, b -> a / b }
+    val sub5 = sub(5)
+    val div2 = div(2)
+    println(sub(5)(10) == sub5(10))
+    println(div(2)(18) == div2(18))
 }
