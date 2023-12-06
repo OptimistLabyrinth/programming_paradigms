@@ -1,5 +1,7 @@
 package higher_order_function_final
 
+import java.lang.Exception
+import java.security.InvalidParameterException
 import java.util.function.Predicate
 
 data class User(
@@ -55,6 +57,26 @@ fun <T, R> _curry_right(func: (T, T) -> R): (T) -> (T) -> R {
     }
 }
 
+fun <T> _reduce(list: List<T>, accumulator: T, func: (T, T) -> T): T {
+    var result = accumulator
+    for (element in list) {
+        result = func(result, element)
+    }
+    return result
+}
+
+fun <T> _reduce(list: List<T>, func: (T, T) -> T): T {
+    if (list.isEmpty()) {
+        throw InvalidParameterException("list should not be empty")
+    }
+    var result = list[0]
+    val listSliced = list.slice(1..<list.size)
+    for (element in listSliced) {
+        result = func(result, element)
+    }
+    return result
+}
+
 fun run_something_funny() {
     val add = _curry { a: Int, b -> a + b }
     val mul = _curry { a: Int, b -> a * b }
@@ -68,4 +90,20 @@ fun run_something_funny() {
     val div2 = div(2)
     println(sub(5)(10) == sub5(10))
     println(div(2)(18) == div2(18))
+    val sum1 = _reduce(listOf(1, 2, 3, 4), 0) { a: Int, b -> a + b }
+    val sum2 = _reduce(listOf(1, 2, 3, 4)) { a: Int, b -> a + b }
+    val product1 = _reduce(listOf(2, 5, 10), 1) { a: Int, b -> a * b }
+    val product2 = _reduce(listOf(2, 5, 10)) { a: Int, b -> a * b }
+    println(sum1)
+    println(sum2)
+    println(product1)
+    println(product2)
+    try {
+        val empty1 = _reduce(listOf(), 0) { a: Int, b -> a + b }
+        val empty2 = _reduce(listOf()) { a: Int, b -> a + b }
+        println(empty1)
+        println(empty2)
+    } catch (ex: Exception) {
+        println(ex)
+    }
 }
