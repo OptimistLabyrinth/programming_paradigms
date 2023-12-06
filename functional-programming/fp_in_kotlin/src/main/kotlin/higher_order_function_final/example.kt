@@ -1,5 +1,7 @@
 package higher_order_function_final
 
+import java.util.function.Predicate
+
 data class User(
     val id: Int,
     val name: String,
@@ -19,43 +21,31 @@ val users: List<User> = listOf(
     User(10, "XQ", 29),
 )
 
-val users_age_at_least_thirty: MutableList<User> = ArrayList()
-fun get_users_age_at_least_thirty() {
-    for (user in users) {
-        if (user.age >= 30) {
-            users_age_at_least_thirty.add(user)
+fun <T> _filter(list: List<T>, predicate: Predicate<T>): List<T> {
+    val filtered_list: MutableList<T> = ArrayList()
+    for (element in list) {
+        if (predicate.test(element)) {
+            filtered_list.add(element)
         }
     }
+    return filtered_list
 }
 
-val names_of_users_age_at_least_thirty: MutableList<String> = ArrayList()
-fun get_names_of_users_age_at_least_thirty() {
-    for (user in users_age_at_least_thirty) {
-        names_of_users_age_at_least_thirty.add(user.name)
+fun <T, R> _map(list: List<T>, func: (T) -> R): List<R> {
+    val new_list: MutableList<R> = ArrayList()
+    for (element in list) {
+        new_list.add(func(element))
     }
-}
-
-val users_age_less_than_thirty: MutableList<User> = ArrayList()
-fun get_users_age_less_than_thirty() {
-    for (user in users) {
-        if (user.age < 30) {
-            users_age_less_than_thirty.add(user)
-        }
-    }
-}
-
-val ages_of_users_age_less_than_thirty: MutableList<Int> = ArrayList()
-fun get_ages_of_users_age_less_than_thirty() {
-    for (user in users_age_less_than_thirty) {
-        ages_of_users_age_less_than_thirty.add(user.age)
-    }
+    return new_list
 }
 
 fun run_something_funny() {
-    get_users_age_at_least_thirty()
-    get_names_of_users_age_at_least_thirty()
+    val users_age_at_least_thirty = _filter(users) { user -> user.age >= 30 }
+    val names_of_users_age_at_least_thirty = _map(users_age_at_least_thirty) { user -> user.name }
     println(names_of_users_age_at_least_thirty)
-    get_users_age_less_than_thirty()
-    get_ages_of_users_age_less_than_thirty()
+    val users_age_less_than_thirty = _filter(users) { user -> user.age < 30 }
+    val ages_of_users_age_less_than_thirty = _map(users_age_less_than_thirty) { user -> user.age }
     println(ages_of_users_age_less_than_thirty)
+    println(_filter(listOf(1, 2, 3, 4)) { num -> num % 2 == 0 })
+    println(_filter(listOf(1, 2, 3, 4)) { num -> num % 2 != 0 })
 }
