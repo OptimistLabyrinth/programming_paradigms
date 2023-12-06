@@ -23,20 +23,20 @@ val users: List<User> = listOf(
 
 fun <T> _filter(list: List<T>, predicate: Predicate<T>): List<T> {
     val filtered_list: MutableList<T> = ArrayList()
-    for (element in list) {
-        if (predicate.test(element)) {
-            filtered_list.add(element)
-        }
-    }
+    _each(list) { element -> { if (predicate.test(element)) filtered_list.add(element) } }
     return filtered_list
 }
 
 fun <T, R> _map(list: List<T>, func: (T) -> R): List<R> {
     val new_list: MutableList<R> = ArrayList()
-    for (element in list) {
-        new_list.add(func(element))
-    }
+    _each(list) { element -> func(element) }
     return new_list
+}
+
+fun <T, R> _each(list: List<T>, func: (T) -> R) {
+    for (element in list) {
+        func(element)
+    }
 }
 
 fun run_something_funny() {
