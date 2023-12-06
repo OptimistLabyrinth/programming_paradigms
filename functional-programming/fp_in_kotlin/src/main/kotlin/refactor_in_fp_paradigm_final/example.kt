@@ -14,14 +14,19 @@ private fun add_item_to_cart(name: String, price: Int) {
 }
 
 private fun calc_cart_price_total() {
-    shopping_cart_price_total = 0
-    for (i in 0..shopping_cart.size - 1) {
-        val item = shopping_cart[i]
-        shopping_cart_price_total += item.price
-    }
+    shopping_cart_price_total = calc_total()
     set_cart_price_total_on_ui()
     update_shipping_icons()
     update_tax_ui()
+}
+
+private fun calc_total(): Int {
+    var price_total = 0
+    for (i in 0..shopping_cart.size - 1) {
+        val item = shopping_cart[i]
+        price_total += item.price
+    }
+    return price_total
 }
 
 private fun set_cart_price_total_on_ui() {
