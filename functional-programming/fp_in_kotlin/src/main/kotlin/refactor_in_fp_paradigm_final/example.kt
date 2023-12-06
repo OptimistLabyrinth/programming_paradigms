@@ -44,12 +44,16 @@ private fun update_shipping_icons() {
     for (i in 0..buy_buttons.size - 1) {
         val button = buy_buttons[i]
         val item = button.item
-        if (20 <= item.price + shopping_cart_price_total) {
+        if (is_free_delivery_available(shopping_cart_price_total, item)) {
             button.show_free_shipping_icon()
         } else {
             button.hide_free_shipping_icon()
         }
     }
+}
+
+private fun is_free_delivery_available(cart_price_total: Int, item: shop_item): Boolean {
+    return 20 <= item.price + cart_price_total
 }
 
 private class button(val label: String, val item: shop_item) {
@@ -71,7 +75,11 @@ private fun get_buy_button_icons(): MutableList<button> {
 }
 
 private fun update_tax_ui() {
-    set_tax_dom(shopping_cart_price_total * 0.1)
+    set_tax_dom(calc_tax(shopping_cart_price_total))
+}
+
+private fun calc_tax(amount: Int): Double {
+    return amount * 0.1
 }
 
 private fun set_tax_dom(price_total: Double) {
