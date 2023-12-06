@@ -9,21 +9,25 @@ private var shopping_cart: MutableList<shop_item> = ArrayList()
 private var shopping_cart_price_total = 0
 
 private fun add_item_to_cart(name: String, price: Int) {
-    shopping_cart.add(shop_item(name, price))
+    add_item(name, price)
     calc_cart_price_total()
 }
 
+private fun add_item(name: String, price: Int) {
+    shopping_cart.add(shop_item(name, price))
+}
+
 private fun calc_cart_price_total() {
-    shopping_cart_price_total = calc_total()
+    shopping_cart_price_total = calc_total(shopping_cart)
     set_cart_price_total_on_ui()
     update_shipping_icons()
     update_tax_ui()
 }
 
-private fun calc_total(): Int {
+private fun calc_total(cart: MutableList<shop_item>): Int {
     var price_total = 0
-    for (i in 0..shopping_cart.size - 1) {
-        val item = shopping_cart[i]
+    for (i in 0..cart.size - 1) {
+        val item = cart[i]
         price_total += item.price
     }
     return price_total
