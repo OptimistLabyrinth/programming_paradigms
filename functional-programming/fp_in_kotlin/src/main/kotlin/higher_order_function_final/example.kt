@@ -1,6 +1,5 @@
 package higher_order_function_final
 
-import java.lang.Exception
 import java.security.InvalidParameterException
 import java.util.function.Predicate
 
@@ -77,33 +76,47 @@ fun <T> _reduce(list: List<T>, func: (T, T) -> T): T {
     return result
 }
 
-fun run_something_funny() {
-    val add = _curry { a: Int, b -> a + b }
-    val mul = _curry { a: Int, b -> a * b }
-    val add5 = add(5)
-    val mul7 = mul(7)
-    println(add(5)(-2) == add5(-2))
-    println(mul(7)(3) == mul7(3))
-    val sub = _curry_right { a: Int, b -> a - b }
-    val div = _curry_right { a: Int, b -> a / b }
-    val sub5 = sub(5)
-    val div2 = div(2)
-    println(sub(5)(10) == sub5(10))
-    println(div(2)(18) == div2(18))
-    val sum1 = _reduce(listOf(1, 2, 3, 4), 0) { a: Int, b -> a + b }
-    val sum2 = _reduce(listOf(1, 2, 3, 4)) { a: Int, b -> a + b }
-    val product1 = _reduce(listOf(2, 5, 10), 1) { a: Int, b -> a * b }
-    val product2 = _reduce(listOf(2, 5, 10)) { a: Int, b -> a * b }
-    println(sum1)
-    println(sum2)
-    println(product1)
-    println(product2)
-    try {
-        val empty1 = _reduce(listOf(), 0) { a: Int, b -> a + b }
-        val empty2 = _reduce(listOf()) { a: Int, b -> a + b }
-        println(empty1)
-        println(empty2)
-    } catch (ex: Exception) {
-        println(ex)
+fun <T> _pipe(vararg funcs: (T) -> T): (T) -> T {
+    return fun(param: T): T {
+        var result = param
+        for (func in funcs) {
+            result = func(result)
+        }
+        return result
     }
+}
+
+fun <T> _pipe_on(param: T, vararg funcs: (T) -> T): T {
+    return _pipe(*funcs)(param)
+}
+
+fun run_something_funny() {
+    val pipeline1 = _pipe(
+        { a: Int -> a + 1 },
+        { a -> a * 4 }
+    )
+    val piped11 = pipeline1(5)
+    val piped12 = _pipe_on(
+        5,
+        { a: Int -> a + 1 },
+        { a -> a * 4 }
+    )
+    val pipeline2 = _pipe(
+        { a: Int -> a + 6 },
+        { a -> a * 3 },
+        { a -> a - 10 },
+        { a -> a / 2 },
+    )
+    val piped21 = pipeline2(4)
+    val piped22 = _pipe_on(
+        4,
+        { a: Int -> a + 6 },
+        { a -> a * 3 },
+        { a -> a - 10 },
+        { a -> a / 2 },
+    )
+    println(piped11)
+    println(piped12)
+    println(piped21)
+    println(piped22)
 }
