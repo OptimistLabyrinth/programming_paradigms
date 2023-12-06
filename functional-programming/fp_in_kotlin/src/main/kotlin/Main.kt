@@ -10,6 +10,7 @@ fun main(args: Array<String>) {
 }
 
 fun test_higher_order_function() {
+    higher_order_function_01.run_something_funny()
     higher_order_function_final.run_something_funny()
 }
 

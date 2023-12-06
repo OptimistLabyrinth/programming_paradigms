@@ -91,32 +91,12 @@ fun <T> _pipe_on(param: T, vararg funcs: (T) -> T): T {
 }
 
 fun run_something_funny() {
-    val pipeline1 = _pipe(
-        { a: Int -> a + 1 },
-        { a -> a * 4 }
-    )
-    val piped11 = pipeline1(5)
-    val piped12 = _pipe_on(
-        5,
-        { a: Int -> a + 1 },
-        { a -> a * 4 }
-    )
-    val pipeline2 = _pipe(
-        { a: Int -> a + 6 },
-        { a -> a * 3 },
-        { a -> a - 10 },
-        { a -> a / 2 },
-    )
-    val piped21 = pipeline2(4)
-    val piped22 = _pipe_on(
-        4,
-        { a: Int -> a + 6 },
-        { a -> a * 3 },
-        { a -> a - 10 },
-        { a -> a / 2 },
-    )
-    println(piped11)
-    println(piped12)
-    println(piped21)
-    println(piped22)
+    users
+        .run { _filter(this) { user -> user.age >= 30 } }
+        .run { _map(this) { user -> user.name } }
+        .run { println(this) }
+    users
+        .run { _filter(this) { user -> user.age < 30 } }
+        .run { _map(this) { user -> user.age } }
+        .run { println(this) }
 }
