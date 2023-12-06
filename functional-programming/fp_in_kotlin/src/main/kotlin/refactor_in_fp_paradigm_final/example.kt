@@ -9,12 +9,14 @@ private var shopping_cart: MutableList<shop_item> = ArrayList()
 private var shopping_cart_price_total = 0
 
 private fun add_item_to_cart(cart: MutableList<shop_item>, name: String, price: Int) {
-    add_item(cart, name, price)
+    shopping_cart = add_item(cart, name, price)
     calc_cart_price_total()
 }
 
-private fun add_item(cart: MutableList<shop_item>, name: String, price: Int) {
-    cart.add(shop_item(name, price))
+private fun add_item(cart: MutableList<shop_item>, name: String, price: Int): MutableList<shop_item> {
+    val new_cart = cart.slice(0..cart.size - 1) as MutableList<shop_item>
+    new_cart.add(shop_item(name, price))
+    return new_cart
 }
 
 private fun calc_cart_price_total() {
